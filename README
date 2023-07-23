@@ -1,0 +1,7 @@
+This is where I learn C++
+
+Each dir is a separate project
+
+Projects can be compiled by running 'make'
+
+using C++20
