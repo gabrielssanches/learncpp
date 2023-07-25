@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
     }
 
     int gift_wrapping_area_total = 0;
+    int ribbon_len = 0;
     std::string line;
     while (std::getline(input_f, line)) {
         int L, W, H;
@@ -34,17 +36,17 @@ int main(int argc, char *argv[]) {
         char delimiter;
         iss >> L >> delimiter >> W >> delimiter >> H;
 
-        int side_area_smallest = L * W;
-        if (side_area_smallest > (L * H)) {
-            side_area_smallest = (L * H);
-        }
-        if (side_area_smallest > (W * H)) {
-            side_area_smallest = (W * H);
-        }
+        vector<int> gift_dim = {L, W, H};
+        sort(gift_dim.begin(), gift_dim.end());
+
+        int side_area_smallest = gift_dim[0] * gift_dim[1];
         int area_total = (2 * ((L * W) + (W * H) + (H * L))) + side_area_smallest;
         gift_wrapping_area_total += area_total;
+
+        ribbon_len += (gift_dim[0] * gift_dim[1] * gift_dim[2]) + (2*(gift_dim[0] + gift_dim[1]));
     }
     std::cout << "square feet of wrapping paper needed = " << gift_wrapping_area_total << std::endl;
+    std::cout << "feet of ribbon needed = " << ribbon_len << std::endl;
 
     input_f.close();
     return 0;
