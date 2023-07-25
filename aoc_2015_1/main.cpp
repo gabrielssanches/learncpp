@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <array>
 
 using namespace std;
 
@@ -16,6 +15,7 @@ int main(int argc, char *argv[]) {
     for (string line; getline(puzzle_f, line); ) {
         cout << line << "\n";
     }
+    puzzle_f.close();
 
     string input_fname = "input.txt";
     ifstream input_f(input_fname, ios::in);
@@ -25,6 +25,8 @@ int main(int argc, char *argv[]) {
     }
 
     int floor = 0;
+    int basement_first_time_position = 1;
+    bool basement_first_time = false;
     char c;
     while (input_f.read(&c, 1)) {
         if (c == '(') {
@@ -33,8 +35,18 @@ int main(int argc, char *argv[]) {
         if (c == ')') {
             floor--;
         }
+        if (!basement_first_time) {
+            if (floor == -1) {
+                basement_first_time = true;
+            } else {
+                basement_first_time_position++;
+            }
+        }
     }
+    input_f.close();
+
     cout << "Santa ends up on floor: " << floor << "\n";
+    cout << "Santa first time in the basement at position:: " << basement_first_time_position << "\n";
 
     return 0;
 }
