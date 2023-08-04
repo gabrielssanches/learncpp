@@ -44,6 +44,10 @@ class Matrix2D {
             (*grid)[x_abs][y_abs]++;
         }
 
+        vector<vector <int>> *grid_get(int q) {
+            return &_grid[q];
+        }
+
         unsigned int gifted_houses(void) {
             unsigned int gifted = 0;
             for (vector<vector<int>> &grid : _grid) {
@@ -156,7 +160,7 @@ int main(int argc, char *argv[]) {
         raylib::Vector2 x_axis(0, screenHeight/2);
         x_axis.DrawLine((raylib::Vector2){screenWidth, screenHeight/2}, (raylib::Color){BLACK});
 
-        if ((window_ts - lastdrawn_ts) > 0.1f) {
+        if ((window_ts - lastdrawn_ts) > 0.010f) {
             lastdrawn_ts = window_ts;
             rot+=10;
 
@@ -167,11 +171,25 @@ int main(int argc, char *argv[]) {
             santa.move(c);
             houses.gift(santa.pos());
         }
+        
+        vector<vector <int>> *grid = houses.grid_get(0);
+        int row_i = 0;
+        int col_i = 0;
+        for (vector<int> &row : *grid) {
+            for (int col : row) {
+                cout << "col_i: " << row_i << "," << col_i << endl;
+                raylib::Rectangle h_rect(screenWidth/2 + (row_i * 10), screenHeight/2 -10 - (col_i * 10), 10, 10);
+                h_rect.Draw(LIGHTGRAY);
+                col_i++;
+            }
+            row_i++;
+        }
 
         int x, y;
         tie(x, y) = santa.pos();
         raylib::Rectangle santa(screenWidth/2 + (x * 10), screenHeight/2 - (y * 10), 10, 10);
         santa.Draw(RED);
+
         //santa.Draw((raylib::Vector2){0,0}, (float)rot, RED);
 
         //house_rect.DrawLine(screenWidth/2100, 100, 200, 200);
