@@ -5,3 +5,35 @@ Each dir is a separate project
 Projects can be compiled by running 'make'
 
 using C++20
+
+
+# raylib
+
+install dependencies (Ubuntu)
+
+``` shell
+sudo apt install build-essential git cmake make
+sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
+```
+
+raylib and C++ wrapper is compiled externally and dependencies are copied to `raylib/lib` and `raylib/include` folders.
+This can be done outside here in a projects folder, lets call it ~/projects
+
+``` shell
+cd ~/projects
+git clone https://github.com/RobLoach/raylib-cpp.git -b v4.5.1 raylib-cpp
+cd raylib-cpp
+mkdir build
+cd build
+cmake ..
+make
+cd ..
+```
+
+then copy the artifacts and includes to this project's directories
+
+``` shell
+cp build/_deps/raylib-build/raylib/libraylib.a ~/projects/learncpp/raylib/lib
+cp -r build/_deps/raylib-build/raylib/include/* ~/projects/learncpp/raylib/include
+cp -r include/* ~/projects/learncpp/raylib/include
+```
