@@ -23,7 +23,7 @@ DBG_OPT?=-gdwarf-2 -O2 # symbols and optimization
 
 CC=g++-10
 
-CXXFLAGS+=-std=c++17
+CXXFLAGS+=-std=c++20
 #CXXFLAGS+=-Werror
 CXXFLAGS+=-Wall
 

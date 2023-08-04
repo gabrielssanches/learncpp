@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <tuple>
+#include <string>
 
 using namespace std;
 
@@ -123,76 +124,69 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    int screenWidth = 800;
+    int screenHeight = 600;
+
+    raylib::Color textColor(BLACK);
+    raylib::Window w(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
+    raylib::Color house_rect(0, 68, 130); 
+    raylib::Color grid_color(0, 68, 130); 
+
+    SetTargetFPS(60);
+
+    int rot = 0;
+    
+    float window_ts = 0.0f;
+    float lastdrawn_ts = 0.0f;
+
     char c;
     Santa santa;
     Matrix2D houses;
     houses.gift(santa.pos());
-    while(input_f.get(c)) {
-        santa.move(c);
-        houses.gift(santa.pos());
+
+    while (!w.ShouldClose()) {// Detect window close button or ESC key
+        window_ts += w.GetFrameTime();
+
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+
+        raylib::Vector2 y_axis(screenWidth/2, 0);
+        y_axis.DrawLine((raylib::Vector2){screenWidth/2, screenHeight}, (raylib::Color){BLACK});
+        raylib::Vector2 x_axis(0, screenHeight/2);
+        x_axis.DrawLine((raylib::Vector2){screenWidth, screenHeight/2}, (raylib::Color){BLACK});
+
+        if ((window_ts - lastdrawn_ts) > 0.1f) {
+            lastdrawn_ts = window_ts;
+            rot+=10;
+
+            if (!input_f.get(c)) {
+                cout << "DONE!" << endl;
+                break;
+            }
+            santa.move(c);
+            houses.gift(santa.pos());
+        }
+
+        int x, y;
+        tie(x, y) = santa.pos();
+        raylib::Rectangle santa(screenWidth/2 + (x * 10), screenHeight/2 - (y * 10), 10, 10);
+        santa.Draw(RED);
+        //santa.Draw((raylib::Vector2){0,0}, (float)rot, RED);
+
+        //house_rect.DrawLine(screenWidth/2100, 100, 200, 200);
+        
+        //house_rect.DrawRectangle(-100, screenHeight/2 - 128, 256, 256);
+        string pos_str;
+        pos_str = "Santa(" + to_string(x) + ", " + to_string(y) + ")";
+        textColor.DrawText(pos_str, 10, 10, 20);
+        EndDrawing();
     }
 
     unsigned int gifted_houses = houses.gifted_houses();
     cout << "Part 1: Gifted Houses = " << gifted_houses << endl;
 
-    input_f.clear();
-    input_f.seekg(0, ios::beg);
-
-    Santa santa2;
-    Santa robo_santa;
-    Matrix2D houses2;
-    int turn = 0;
-    houses2.gift(santa2.pos());
-    houses2.gift(robo_santa.pos());
-    while(input_f.get(c)) {
-        if (turn++ % 2 == 0) {
-            santa2.move(c);
-            houses2.gift(santa2.pos());
-        } else {
-            robo_santa.move(c);
-            houses2.gift(robo_santa.pos());
-        }
-    }
-
-    unsigned int gifted_houses2 = houses2.gifted_houses();
-    cout << "Part 2: Gifted Houses = " << gifted_houses2 << endl;
-
     input_f.close();
-
-    int screenWidth = 1920;
-    int screenHeight = 1080;
-
-    raylib::Color textColor(LIGHTGRAY);
-    raylib::Window w(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
-    raylib::Color house_rect(0, 68, 130); 
-
-    SetTargetFPS(60);
-
-    // Main game loop
-    while (!w.ShouldClose()) // Detect window close button or ESC key
-    {
-        // Update
-
-        // part 1
-        //
-        // read input
-        // make santa move
-        // create street, create houses, gift
-        // 
-        // part 2
-        //
-        // read input
-        // make santa/robot_santa move
-        // create street, create houses, gift
-
-        
-        // Draw
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        house_rect.DrawRectangle(screenWidth/2 - 128, screenHeight/2 - 128, 256, 256);
-        textColor.DrawText("Congrats! You created your first window!", 190, 200, 20);
-        EndDrawing();
-    }
 
     return 0;
 }
