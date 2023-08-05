@@ -155,12 +155,7 @@ int main(int argc, char *argv[]) {
 
         ClearBackground(RAYWHITE);
 
-        raylib::Vector2 y_axis(screenWidth/2, 0);
-        y_axis.DrawLine((raylib::Vector2){screenWidth/2, screenHeight}, (raylib::Color){BLACK});
-        raylib::Vector2 x_axis(0, screenHeight/2);
-        x_axis.DrawLine((raylib::Vector2){screenWidth, screenHeight/2}, (raylib::Color){BLACK});
-
-        if ((window_ts - lastdrawn_ts) > 0.010f) {
+        if ((window_ts - lastdrawn_ts) > 0.050f) {
             lastdrawn_ts = window_ts;
             rot+=10;
 
@@ -174,12 +169,60 @@ int main(int argc, char *argv[]) {
         
         vector<vector <int>> *grid = houses.grid_get(0);
         int row_i = 0;
-        int col_i = 0;
         for (vector<int> &row : *grid) {
+            int col_i = 0;
             for (int col : row) {
-                cout << "col_i: " << row_i << "," << col_i << endl;
                 raylib::Rectangle h_rect(screenWidth/2 + (row_i * 10), screenHeight/2 -10 - (col_i * 10), 10, 10);
-                h_rect.Draw(LIGHTGRAY);
+                if (col > 0) {
+                    h_rect.Draw(GREEN);
+                } else {
+                    h_rect.Draw(LIGHTGRAY);
+                }
+                col_i++;
+            }
+            row_i++;
+        }
+        grid = houses.grid_get(1);
+        row_i = 0;
+        for (vector<int> &row : *grid) {
+            int col_i = 0;
+            for (int col : row) {
+                raylib::Rectangle h_rect(screenWidth/2 + (row_i * 10), screenHeight/2 + (col_i * 10), 10, 10);
+                if (col > 0) {
+                    h_rect.Draw(GREEN);
+                } else {
+                    h_rect.Draw(LIGHTGRAY);
+                }
+                col_i++;
+            }
+            row_i++;
+        }
+        grid = houses.grid_get(2);
+        row_i = 0;
+        for (vector<int> &row : *grid) {
+            int col_i = 0;
+            for (int col : row) {
+                raylib::Rectangle h_rect(screenWidth/2 -10 - (row_i * 10), screenHeight/2 + (col_i * 10), 10, 10);
+                if (col > 0) {
+                    h_rect.Draw(GREEN);
+                } else {
+                    h_rect.Draw(LIGHTGRAY);
+                }
+                col_i++;
+            }
+            row_i++;
+        }
+        grid = houses.grid_get(3);
+        row_i = 0;
+        for (vector<int> &row : *grid) {
+            int col_i = 0;
+            for (int col : row) {
+                raylib::Rectangle h_rect(screenWidth/2 -10 - (row_i * 10), screenHeight/2 -10 - (col_i * 10), 10, 10);
+                if (col > 0) {
+                    h_rect.Draw(GREEN);
+                } else {
+                    h_rect.Draw(LIGHTGRAY);
+                }
                 col_i++;
             }
             row_i++;
@@ -187,8 +230,13 @@ int main(int argc, char *argv[]) {
 
         int x, y;
         tie(x, y) = santa.pos();
-        raylib::Rectangle santa(screenWidth/2 + (x * 10), screenHeight/2 - (y * 10), 10, 10);
+        raylib::Rectangle santa(screenWidth/2 + (x * 10), screenHeight/2 -10 - (y * 10), 10, 10);
         santa.Draw(RED);
+
+        raylib::Vector2 y_axis(screenWidth/2, 0);
+        y_axis.DrawLine((raylib::Vector2){screenWidth/2, screenHeight}, (raylib::Color){BLACK});
+        raylib::Vector2 x_axis(0, screenHeight/2);
+        x_axis.DrawLine((raylib::Vector2){screenWidth, screenHeight/2}, (raylib::Color){BLACK});
 
         //santa.Draw((raylib::Vector2){0,0}, (float)rot, RED);
 
