@@ -148,6 +148,8 @@ int main(int argc, char *argv[]) {
     Matrix2D houses;
     houses.gift(santa.pos());
 
+    raylib::Camera2D cam(raylib::Vector2{0,0}, raylib::Vector2{0,0}, 0.0f, 1.0f);
+
     while (!w.ShouldClose()) {// Detect window close button or ESC key
         window_ts += w.GetFrameTime();
 
@@ -155,7 +157,9 @@ int main(int argc, char *argv[]) {
 
         ClearBackground(RAYWHITE);
 
-        if ((window_ts - lastdrawn_ts) > 0.050f) {
+        BeginMode2D(cam);
+
+        if ((window_ts - lastdrawn_ts) > 0.010f) {
             lastdrawn_ts = window_ts;
             rot+=10;
 
@@ -246,6 +250,7 @@ int main(int argc, char *argv[]) {
         string pos_str;
         pos_str = "Santa(" + to_string(x) + ", " + to_string(y) + ")";
         textColor.DrawText(pos_str, 10, 10, 20);
+        EndMode2D();
         EndDrawing();
     }
 
