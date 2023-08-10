@@ -157,9 +157,17 @@ int main(int argc, char *argv[]) {
 
         ClearBackground(RAYWHITE);
 
+        if (IsKeyDown(KEY_UP)) {
+            cam.target = cam.GetTarget() + Vector2{0, -10};
+        }
+        if (IsKeyDown(KEY_DOWN)) {
+            //cam.target = cam.target + Vector2{0, 10};
+        }
+
+
         BeginMode2D(cam);
 
-        if ((window_ts - lastdrawn_ts) > 0.010f) {
+        if (true || (window_ts - lastdrawn_ts) > 0.010f) {
             lastdrawn_ts = window_ts;
             rot+=10;
 
