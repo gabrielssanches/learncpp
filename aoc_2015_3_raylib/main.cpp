@@ -158,10 +158,21 @@ int main(int argc, char *argv[]) {
         ClearBackground(RAYWHITE);
 
         if (IsKeyDown(KEY_UP)) {
-            cam.target = cam.GetTarget() + Vector2{0, -10};
+            //cam.target = cam.GetTarget() + Vector2{0, -10};
+            raylib::Vector2 target_diff(0, -10);
+            raylib::Vector2 target;
+            target = cam.GetTarget();
+            target += target_diff;
+            cam.SetTarget(target); // Addition assignment operator override.
         }
         if (IsKeyDown(KEY_DOWN)) {
             //cam.target = cam.target + Vector2{0, 10};
+            // raylib-cpp
+            raylib::Vector2 target_diff(0, 10);
+            raylib::Vector2 target;
+            target = cam.GetTarget();
+            target += target_diff;
+            cam.SetTarget(target); // Addition assignment operator override.
         }
 
 
