@@ -1,6 +1,7 @@
+#include "puzzle.hpp"
+
 #include <raylib-cpp.hpp>
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <tuple>
@@ -111,66 +112,26 @@ class Santa {
         int _pos_y;
 };
 
-int main(int argc, char *argv[]) {
-    cout << "AoC 2015 day 3 - https://adventofcode.com/2015/day/3\n";
-
-    string puzzle_fname = "puzzle.txt";
-    ifstream puzzle_f(puzzle_fname, ios::in);
-    if (!puzzle_f.is_open()) {
-        cout << "Could not open puzzle file: " << puzzle_fname << "\n";
-        return 1;
-    }
-    for (string line; getline(puzzle_f, line); ) {
-        cout << line << "\n";
-    }
-    puzzle_f.close();
-
-    string input_fname = "input.txt";
-    ifstream input_f(input_fname, ios::in);
-    if (!input_f.is_open()) {
-        cout << "Could not open input file: " << input_fname << "\n";
-        return 1;
-    }
-
-    int screenWidth = 800;
-    int screenHeight = 600;
-
-    raylib::Window w(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
-
-#if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(__window_main_loop, 0, 1);
-#else
-    SetTargetFPS(60);   // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!window.ShouldClose()) {    // Detect window close button or ESC key
-        __window_main_loop();
-    }
-#endif
-    return 0;
-}
-
+int screenWidth = 800;
+int screenHeight = 600;
+raylib::Window window;
+#if 1
 static void __window_main_loop(void) {
+    static float window_ts = 0.0f;
+    static float lastdrawn_ts = 0.0f;
+    static Santa santa;
+    static Matrix2D houses;
     static bool setup_done = false;
-
-    if (setup_done) {
-        goto main_loop;
+    static raylib::Camera2D cam;
+    static string radio_cmds(__puzzle_input_part_1);
+    static int c_i = 0;
+    if (!setup_done) {
+        setup_done = true;
+        cam = raylib::Camera2D(raylib::Vector2{0,0}, raylib::Vector2{0,0}, 0.0f, 1.0f);
     }
-
-    int rot = 0;
-    float window_ts = 0.0f;
-    float lastdrawn_ts = 0.0f;
-
-    char c;
-    Santa santa;
-    Matrix2D houses;
-    houses.gift(santa.pos());
-
-    raylib::Camera2D cam(raylib::Vector2{0,0}, raylib::Vector2{0,0}, 0.0f, 1.0f);
 
 main_loop:
-    window_ts += w.GetFrameTime();
+    window_ts += window.GetFrameTime();
 
     BeginDrawing();
 
@@ -197,16 +158,14 @@ main_loop:
 
     BeginMode2D(cam);
 
-    if (true || (window_ts - lastdrawn_ts) > 0.010f) {
+    if ((window_ts - lastdrawn_ts) > 0.010f) {
         lastdrawn_ts = window_ts;
-        rot+=10;
+        if (c_i < radio_cmds.length()) {
+            char c = radio_cmds[c_i++];
 
-        if (!input_f.get(c)) {
-            cout << "DONE!" << endl;
-            break;
+            santa.move(c);
+            houses.gift(santa.pos());
         }
-        santa.move(c);
-        houses.gift(santa.pos());
     }
     
     vector<vector <int>> *grid = houses.grid_get(0);
@@ -272,15 +231,14 @@ main_loop:
 
     int x, y;
     tie(x, y) = santa.pos();
-    raylib::Rectangle santa(screenWidth/2 + (x * 10), screenHeight/2 -10 - (y * 10), 10, 10);
-    santa.Draw(RED);
+    raylib::Rectangle santar(screenWidth/2 + (x * 10), screenHeight/2 -10 - (y * 10), 10, 10);
+    santar.Draw(RED);
 
     raylib::Vector2 y_axis(screenWidth/2, 0);
     y_axis.DrawLine((raylib::Vector2){screenWidth/2, screenHeight}, (raylib::Color){BLACK});
     raylib::Vector2 x_axis(0, screenHeight/2);
     x_axis.DrawLine((raylib::Vector2){screenWidth, screenHeight/2}, (raylib::Color){BLACK});
 
-    //santa.Draw((raylib::Vector2){0,0}, (float)rot, RED);
 
     //house_rect.DrawLine(screenWidth/2100, 100, 200, 200);
     
@@ -292,7 +250,28 @@ main_loop:
     EndMode2D();
     EndDrawing();
 
-    //unsigned int gifted_houses = houses.gifted_houses();
-    //cout << "Part 1: Gifted Houses = " << gifted_houses << endl;
-    //input_f.close();
+    unsigned int gifted_houses = houses.gifted_houses();
+    cout << "Part 1: Gifted Houses = " << gifted_houses << endl;
 }
+#endif
+
+int main(int argc, char *argv[]) {
+    cout << __puzzle_str << endl;
+    cout << __puzzle_input_part_1 << endl;
+
+    window.Init(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
+
+#if defined(PLATFORM_WEB)
+    emscripten_set_main_loop(__window_main_loop, 0, 1);
+#else
+    SetTargetFPS(60);   // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
+
+    // Main game loop
+    while (!window.ShouldClose()) {    // Detect window close button or ESC key
+        __window_main_loop();
+    }
+#endif
+    return 0;
+}
+
